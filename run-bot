@@ -1,0 +1,3 @@
+#!/bin/bash
+
+pipenv run python main.py &> bot.log & disown

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+pipenv run python crosspostbot.py &> cpbot.log & disown

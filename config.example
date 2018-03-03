@@ -1,0 +1,10 @@
+[bot]
+client_id=
+client_secret=
+password=
+username=
+user_agent=
+
+[azure]
+ocr_url=
+subscription_key=

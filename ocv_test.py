@@ -6,6 +6,7 @@ import praw
 import re
 import constants as c
 import configparser
+import sys
 
 parser = configparser.ConfigParser()
 parser.read(c.CONFIG_FILE_NAME)
@@ -19,15 +20,25 @@ user_agent = options["user_agent"]
 SUBREDDITS = ["Tinder"]
 
 def main():
-    urls = findValidSubmissionsUrl(SUBREDDITS)
-    for url in urls:
-        print("Image url: "+url)
-        # download image
-        imgBuf = dimage.get(url)
-        try:
-            ocv.analyze(imgBuf, debug = True)
-        except:
-            pass
+    args = sys.argv
+    if len(args) > 1:
+        arg1 = args[1]
+        if isUrlImage(arg1):
+            processUrl(arg1)
+    else:
+        urls = findValidSubmissionsUrl(SUBREDDITS)
+        for url in urls:
+            processUrl(url)
+
+def processUrl(url):
+    print("Image url: "+url)
+    # download image
+    imgBuf = dimage.get(url)
+    try:
+        ocv.analyze(imgBuf, debug = True)
+    except:
+        pass
+            
 
 def findValidSubmissionsUrl(subreddits):
     urls = []

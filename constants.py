@@ -23,7 +23,7 @@ TIMEOUT = 60
 # image
 IMG_WIDTH = 720
 
-BLUE_BOUNDS = ([190, 160, 0], [255, 210, 110])
+BLUE_BOUNDS = ([190, 160, 0], [255, 212, 110])
 GRAY_BOUNDS = ([220, 220, 220], [245, 245, 245])
 
 BLUE = "azure"

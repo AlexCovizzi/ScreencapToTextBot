@@ -6,6 +6,7 @@ import constants as c
 import dimage
 import exceptions
 import ocv
+from random import randint
 import logging
 log = logging.getLogger(__name__)
 
@@ -16,7 +17,13 @@ def process(url):
     # find bounding rects of message bubbles with opencv
     rects = ocv.analyze(imgBuf)
     # if the list is empty we can assume that the screencap is not a conversation
+    # Note: before azureocr so that no useless request is sent to azure ocr service
     if not rects:
+        return ""
+
+    # temporary check to avoid spamming every submission
+    # Note: this is temporary!!!
+    if randint(1,3) != 1:
         return ""
 
     # send data to azure

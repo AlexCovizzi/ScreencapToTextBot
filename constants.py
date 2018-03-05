@@ -19,7 +19,7 @@ TINDER_MATCH_REGEX = r"YOU MATCHED WITH ([A-Z]*)? ?ON [0-9\/]*"
 SOFT_KEYBOARD_REGEX = r"^(GIF)?(.)?(?:Type|Send|Your) (a )?[mM]essage?(\.){0,3}( here)?( Send)?$"
 
 # subreddits (separated by +)
-SUBREDDITS = "sttbplayground"
+SUBREDDITS = "tinder"
 TIMEOUT = 60
 
 # image

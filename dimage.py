@@ -19,6 +19,9 @@ def get(url):
     img = Image.open(io.BytesIO(response.content))
     img = resize(img)
 
+    if not isImageValid(img):
+        return None
+
     img = img.convert('RGB')
     output = io.BytesIO()
     img.save(output, format='JPEG')
@@ -34,3 +37,5 @@ def resize(img):
     hsize = int((float(img.size[1])*float(wpercent)))
     return img.resize((c.IMG_WIDTH,hsize), Image.ANTIALIAS)
 
+def isImageValid(img):
+    return img.size[1] < 4000 and img.size[1] > img.size[0]

@@ -14,6 +14,8 @@ log = logging.getLogger(__name__)
 def process(url):
     # download and resize image
     imgBuf = dimage.get(url)
+    if not imgBuf:
+        return ""
     # find bounding rects of message bubbles with opencv
     rects = ocv.analyze(imgBuf)
     # if the list is empty we can assume that the screencap is not a conversation

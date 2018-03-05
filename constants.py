@@ -4,6 +4,8 @@ CONFIG_FILE_NAME = "config.ini"
 BOT_NAME = "ScreencapToTextBot"
 BOT_VERSION = "0.1"
 BOT_REDDIT_USERNAME = "ScreencapToTextBot"
+SCORE_DELETE_THRESH = -1 # if a comment has score <= of threshold, it's deleted
+SCORE_CHECK_TIME = 60 # time to wait every loop to check the comments score
 
 # Logging
 LOG_FORMAT = "[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s"
@@ -17,7 +19,7 @@ TINDER_MATCH_REGEX = r"YOU MATCHED WITH ([A-Z]*)? ?ON [0-9\/]*"
 SOFT_KEYBOARD_REGEX = r"^(GIF)?(.)?(?:Type|Send|Your) (a )?[mM]essage?(\.){0,3}( here)?( Send)?$"
 
 # subreddits (separated by +)
-SUBREDDITS = "tinder"
+SUBREDDITS = "sttbplayground"
 TIMEOUT = 60
 
 # image
@@ -32,5 +34,5 @@ GRAY = "gray"
 # footer
 COMMENT_FOOTER ='''
 ***
-^(I am a bot and this action was performed automatically | created by /u/duast | )^[Contact](https://www.reddit.com/message/compose/?to=duast) ^| ^[Code](https://github.com/AlexCovizzi/ScreencapToTextBot)
+^(I am a bot and this action was performed automatically | )^[Contact](https://www.reddit.com/message/compose/?to=duast) ^| ^[Code](https://github.com/AlexCovizzi/ScreencapToTextBot) ^(| Downvote to remove)
 '''

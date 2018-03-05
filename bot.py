@@ -1,4 +1,3 @@
-import praw
 import time
 import re
 import constants as c
@@ -6,39 +5,21 @@ import sctt
 from prawcore.exceptions import PrawcoreException, InvalidToken
 from praw.exceptions import PRAWException, ClientException, APIException
 from exceptions import MinorException, CriticalException
-import configparser
 import logging
 log = logging.getLogger(__name__)
 
-parser = configparser.ConfigParser()
-parser.read(c.CONFIG_FILE_NAME)
-options = parser['bot']
-client_id = options["client_id"]
-client_secret = options["client_secret"]
-username = options["username"]
-password = options["password"]
-user_agent = options["user_agent"]
-
 class Bot:
     
-    def __init__(self):
+    def __init__(self, reddit):
         log.info("Bot {} initializing".format(c.BOT_NAME))
-        try:
-            self.reddit = praw.Reddit(
-                client_id=client_id, 
-                client_secret=client_secret, 
-                username=username, password=password, 
-                user_agent=user_agent
-            )
-        except (PRAWException, PrawcoreException) as e:
-            # this should not happen
-            raise CriticalException("Error instancing praw.Reddit: {}".format(str(e)))
+        self.reddit = reddit
+        self.stopped = False
 
     def run(self):
         log.info("Bot {} started.".format(c.BOT_NAME))
-        started_at = time.time()
 
         try:
+            started_at = time.time()
             subreddit = self.reddit.subreddit(c.SUBREDDITS)
 
             for submission in subreddit.stream.submissions():
@@ -59,6 +40,7 @@ class Bot:
             raise MinorException("Error processing subreddit stream: {}".format(str(e)))
 
     def stop(self):
+        self.stopped = True
         log.info("Bot {} stopped.".format(c.BOT_NAME))
 
     def processSubmission(self, submission):

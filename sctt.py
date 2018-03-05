@@ -21,11 +21,6 @@ def process(url):
     if not rects:
         return ""
 
-    # temporary check to avoid spamming every submission
-    # Note: this is temporary!!!
-    if randint(1,3) != 1:
-        return ""
-
     # send data to azure
     lines = azureocr.analyze(imgBuf)
     # if the are no lines something went wrong in the request to azure or there is no text

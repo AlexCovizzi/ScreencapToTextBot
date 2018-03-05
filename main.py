@@ -56,7 +56,7 @@ def runCleaning(reddit):
     running = True
     while running:
         try:
-            log.info("Checking bot's comments")
+            #log.info("Checking bot's comments")
             redditor = reddit.redditor(c.BOT_REDDIT_USERNAME)
             for comment in redditor.comments.new(limit=50):
                 if comment.score <= c.SCORE_DELETE_THRESH:

@@ -38,4 +38,4 @@ def resize(img):
     return img.resize((c.IMG_WIDTH,hsize), Image.ANTIALIAS)
 
 def isImageValid(img):
-    return img.size[1] < 4000 and img.size[1] > img.size[0]
+    return img.size[1] < 4000

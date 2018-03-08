@@ -39,9 +39,15 @@ def extractLines(analysis):
             line = {"left": int(boundingBox[0]), "top": int(boundingBox[1]), "w": int(boundingBox[2]), "h": int(boundingBox[3])}
             text = ""
             for i, word_info in enumerate(line_info["words"]):
+                word_text = word_info["text"]
+                # most of the time I'm is read as 1m or 11m by azure ocr
+                if word_text == "1m" or word_text == "11m":
+                    word_text = "I'm"
+
                 if i > 0:
                     text += " "
-                text += word_info["text"]
+                    
+                text += word_text
 
             line["text"] = text
             lines.append(line)

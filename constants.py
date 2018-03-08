@@ -34,5 +34,5 @@ GRAY = "gray"
 # footer
 COMMENT_FOOTER ='''
 ***
-^(I am a bot and this action was performed automatically | )^[Contact](https://www.reddit.com/message/compose/?to=duast) ^| ^[Code](https://github.com/AlexCovizzi/ScreencapToTextBot) ^(| Downvote to remove)
+^(I am a bot and this comment was added to help redditors with slow internet or data caps | )^[Contact](https://www.reddit.com/message/compose/?to=duast) ^| ^[Code](https://github.com/AlexCovizzi/ScreencapToTextBot) ^(| -1 to remove)
 '''

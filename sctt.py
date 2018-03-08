@@ -45,10 +45,13 @@ def linesToConversation(lines, rects):
     lineInRect = False # at least one line is in a rectangle
     lastRectIndex = -1
     otherName = "Other"
+    other_is_nameable = True
     for line in lines:
             
         rectIndex = getLineRectIndex(line, rects)
         if rectIndex is not None:
+            # if no name was found it means Other has no name
+            other_is_nameable = False
 
             if not isTextValid(line["text"]):
                 continue
@@ -67,7 +70,8 @@ def linesToConversation(lines, rects):
         else:
             lastRectIndex = -1
             # the line could be the name of the other person
-            if isTextName(line["text"]):
+            # only if other is still nameable
+            if other_is_nameable and isTextName(line["text"]) :
                 otherName = line["text"]
             else:
                 message = { "author":None, "text":line["text"]}

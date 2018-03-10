@@ -19,7 +19,7 @@ TINDER_DATE_REGEX = r"^[A-Z][a-z]{4,10} [0-9][0-9]?:[0-9][0-9] ?(?:AM|PM)?$"
 SOFT_KEYBOARD_REGEX = r"^(GIF)?(.)?(?:Type|Send|Your) (a )?[mM]essage?(\.){0,3}( here)?( Send)?$"
 
 # subreddits (separated by +)
-SUBREDDITS = "sttbplayground"
+SUBREDDITS = "tinder"
 TIMEOUT = 60
 
 # image

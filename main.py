@@ -52,6 +52,7 @@ def main():
             bot.stop()
             running = False
 
+# cleaning job that runs every minute and deletes every comment with score <= -1
 def runCleaning(reddit):
     running = True
     while running:

@@ -2,6 +2,7 @@ import time
 import re
 import constants as c
 import sctt
+import imgur
 from prawcore.exceptions import PrawcoreException, InvalidToken
 from praw.exceptions import PRAWException, ClientException, APIException
 from exceptions import MinorException, CriticalException
@@ -45,11 +46,12 @@ class Bot:
 
     def processSubmission(self, submission):
         log.info("Processing submission {}".format(submission.id))
-        if not isSubmissionValid(submission):
+        url = getUrlFromSubmission(submission)
+        if not url:
             log.info("Discarded submission {}: invalid (not an image)".format(submission.id))
             return
             
-        comment = sctt.process(submission.url)
+        comment = sctt.process(url)
         # reply only if the comment is not an empty string
         # if the string is empty it means something went wrong or the
         # screencap is not a conversation
@@ -66,7 +68,17 @@ def reply(submission, comment):
     submission.reply(comment)
     log.info("Replied to submission {}".format(submission.id))
 
-# check if the submission is an image
-def isSubmissionValid(submission):
-    url_is_image = re.match(c.IMAGE_URL_REGEX, submission.url)
-    return url_is_image
+# get image url from the submission or None if the submission is invalid
+def getUrlFromSubmission(submission):
+    url = submission.url
+    url_is_image = re.match(c.IMAGE_URL_REGEX, url)
+    # the url is already an image on "i.redd.it" or "i.imgur.com"
+    if url_is_image:
+        return url
+    match = re.match(c.IMGUR_SINGLE_REGEX, url)
+    # the url is a link to a single image post on imgur
+    if match:
+        return imgur.imageUrlFromSingle(url)
+    
+    # the image is invalid (text, album, etc)
+    return None

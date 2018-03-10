@@ -12,8 +12,8 @@ LOG_FORMAT = "[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)
 LOG_LEVEL = 20 # DEBUG: 10, INFO: 20, WARNING: 30, ERROR: 40, CRITICAL: 50
 
 # regex
-IMAGE_URL_REGEX = r"https?:\/\/i\.(?:redd\.it|imgur\.com)\/\w+\.(?:jpg|jpeg|png)"
-IMGUR_SINGLE_REGEX = r"https?:\/\/imgur\.com\/\w+"
+IMAGE_URL_REGEX = r"^https?:\/\/i\.(?:redd\.it|imgur\.com)\/\w+\.(?:jpg|jpeg|png)$"
+IMGUR_SINGLE_REGEX = r"^https?:\/\/imgur\.com\/\w+$"
 TINDER_NAME_REGEX = u"^[A-Z][a-zà-ü]{2,12}$"
 TINDER_DATE_REGEX = r"^[A-Z][a-z]{4,10} [0-9][0-9]?:[0-9][0-9] ?(?:AM|PM)?$"
 SOFT_KEYBOARD_REGEX = r"^(GIF)?(.)?(?:Type|Send|Your) (a )?[mM]essage?(\.){0,3}( here)?( Send)?$"

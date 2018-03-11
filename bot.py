@@ -71,10 +71,12 @@ def reply(submission, comment):
 # get image url from the submission or None if the submission is invalid
 def getUrlFromSubmission(submission):
     url = submission.url
+    
     url_is_image = re.match(c.IMAGE_URL_REGEX, url)
     # the url is already an image on "i.redd.it" or "i.imgur.com"
     if url_is_image:
         return url
+
     match = re.match(c.IMGUR_SINGLE_REGEX, url)
     # the url is a link to a single image post on imgur
     if match:

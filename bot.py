@@ -45,7 +45,7 @@ class Bot:
         log.info("Bot {} stopped.".format(c.BOT_NAME))
 
     def processSubmission(self, submission):
-        log.info("Processing submission {}".format(submission.id))
+        log.info("Processing submission {}: {}".format(submission.id, submission.url))
         url = getUrlFromSubmission(submission)
         if not url:
             log.info("Discarded submission {}: invalid (not an image)".format(submission.id))

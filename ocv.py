@@ -4,8 +4,8 @@ import dimage
 import statistics
 import constants as c
 
-MIN_WIDTH = 46
-MIN_HEIGHT = 48
+MIN_WIDTH = 40
+MIN_HEIGHT = 40
 
 DEBUG = False
 

@@ -15,6 +15,7 @@ praw = "*"
 opencv-python = "*"
 pillow = "*"
 "beautifulsoup4" = "*"
+pytesseract = "*"
 
 
 [requires]

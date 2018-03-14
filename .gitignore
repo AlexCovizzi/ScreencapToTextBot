@@ -1,3 +1,8 @@
+#images
+*.jpg
+*.jpeg
+*.png
+
 .vscode/
 
 # configuration file

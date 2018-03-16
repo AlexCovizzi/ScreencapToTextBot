@@ -11,7 +11,7 @@ def get(url):
     response.raise_for_status()
 
     img = Image.open(io.BytesIO(response.content))
-    img = resize(img, 720)
+    img = resize(img, 1080)
     img = img.convert('RGB')
 
     return img

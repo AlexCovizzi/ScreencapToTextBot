@@ -1,9 +1,10 @@
 import downloadimage
 import messagebox
 import ocr
+import time
 
-URLS = ["https://i.imgur.com/Mps09BH.jpg", "https://i.redd.it/wejqbl3on4m01.png", "https://i.redd.it/mxghh2c5q1m01.jpg"]
-URL = URLS[2]
+URLS = ["https://i.redd.it/9pdz4ycgj5m01.jpg", "https://i.imgur.com/Mps09BH.jpg", "https://i.redd.it/wejqbl3on4m01.png", "https://i.redd.it/mxghh2c5q1m01.jpg"]
+URL = URLS[0]
 
 def analyze(img):
     rects = messagebox.find(img)

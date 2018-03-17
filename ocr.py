@@ -4,6 +4,7 @@ import numpy as np
 import pytesseract
 from statistics import mode
 import time
+import downloadimage
 
 TESSERACT_CONFIG = "-c tessedit_char_whitelist=0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ,.=!%&/\?*()^-_ -psm 6"
 
@@ -13,7 +14,7 @@ def analyze(pil_img, bounds = None):
     if bounds: pil_img = pil_img.crop(bounds)
     pil_img = preprocess(pil_img)
     if pil_img:
-        #pil_img.show()
+        pil_img.show()
         text = pytesseract.image_to_string(pil_img, lang="eng")
         return text
     return ""
@@ -54,50 +55,33 @@ def preprocess(pil_img):
 # tesseract does not interpret it as text
 def remove_white_corners(cv_img):
     for px_row in cv_img:
-        k = 0
-        for i, px in enumerate(px_row):
-            if px > 0:
-                px_row[i] = 0
-                k = 0
-            else:
-                k += 1
-                if k > 8:
-                    break
-        k = 0
-        for i, px in reversed(list(enumerate(px_row))):
-            if px > 0:
-                px_row[i] = 0
-                k = 0
-            else:
-                k += 1
-                if k > 8:
-                    break
+        remove_initial_white_from_row(px_row)
+        remove_initial_white_from_row(px_row, reverse=True)
 
     for px_row in cv_img.T:
-        k = 0
-        for i, px in enumerate(px_row):
-            if px > 0:
-                px_row[i] = 0
-                k = 0
-            else:
-                k += 1
-                if k > 8:
-                    break
-        k = 0
-        for i, px in reversed(list(enumerate(px_row))):
-            if px > 0:
-                px_row[i] = 0
-                k = 0
-            else:
-                k += 1
-                if k > 8:
-                    break
+        remove_initial_white_from_row(px_row)
+        remove_initial_white_from_row(px_row, reverse=True)
 
     return cv_img
+
+def remove_initial_white_from_row(row, reverse=False):
+    if reverse: r = reversed(list(enumerate(row)))
+    else: r = enumerate(row)
+    k = 0
+    for i, px in r:
+        if px > 0:
+            row[i] = 0
+            k = 0
+        else:
+            k += 1
+            if k > 8: break
 
 def get_mode_lightness(hls_img):
     px_row = [px[1] for px in hls_img[int(len(hls_img)/2+1)]]
     return mode(px_row)
 
 if __name__ == '__main__':
-    pass
+    url = "https://i.imgur.com/jT3MmwZ.jpg"
+    pil_img = downloadimage.get(url)
+    text = analyze(pil_img)
+    print(text)

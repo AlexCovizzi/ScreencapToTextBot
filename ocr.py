@@ -12,9 +12,11 @@ TESSERACT_CONFIG = "-c tessedit_char_whitelist=0123456789abcdefghijklmnopqrstuvw
 def analyze(pil_img, bounds = None):
     if bounds: pil_img = pil_img.crop(bounds)
     pil_img = preprocess(pil_img)
-    pil_img.show()
-    text = pytesseract.image_to_string(pil_img)
-    return text
+    if pil_img:
+        #pil_img.show()
+        text = pytesseract.image_to_string(pil_img, lang="eng")
+        return text
+    return ""
 
 def preprocess(pil_img):
     start_time = time.time()
@@ -22,13 +24,14 @@ def preprocess(pil_img):
     cv_img = np.array(pil_img)
 
     hls = cv2.cvtColor(cv_img, cv2.COLOR_BGR2HLS)
-    light = get_mode_lightness(hls)
+    try: light = get_mode_lightness(hls)
+    except: return None
     
     cv_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
     if light < 160:
-        ret, cv_img = cv2.threshold(cv_img,232,255,cv2.THRESH_BINARY)
+        ret, cv_img = cv2.threshold(cv_img,212,255,cv2.THRESH_BINARY)
     else:
-        ret, cv_img = cv2.threshold(cv_img,80,255,cv2.THRESH_BINARY_INV)
+        ret, cv_img = cv2.threshold(cv_img,96,255,cv2.THRESH_BINARY_INV)
 
     cv_img = remove_white_corners(cv_img)
 
@@ -70,10 +73,30 @@ def remove_white_corners(cv_img):
                 if k > 8:
                     break
 
+    for px_row in cv_img.T:
+        k = 0
+        for i, px in enumerate(px_row):
+            if px > 0:
+                px_row[i] = 0
+                k = 0
+            else:
+                k += 1
+                if k > 8:
+                    break
+        k = 0
+        for i, px in reversed(list(enumerate(px_row))):
+            if px > 0:
+                px_row[i] = 0
+                k = 0
+            else:
+                k += 1
+                if k > 8:
+                    break
+
     return cv_img
 
 def get_mode_lightness(hls_img):
-    px_row = [px[1] for px in hls[int(len(hls)/2)]]
+    px_row = [px[1] for px in hls_img[int(len(hls_img)/2+1)]]
     return mode(px_row)
 
 if __name__ == '__main__':

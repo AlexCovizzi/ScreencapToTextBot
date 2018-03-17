@@ -80,8 +80,16 @@ if __name__ == '__main__':
     cv_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
     ret, cv_img = cv2.threshold(cv_img,180,255,cv2.THRESH_BINARY)
     pil_img = Image.fromarray(cv_img)
-    text = pytesseract.image_to_string(pil_img, lang="eng")
-    print(text)
+    text = pytesseract.image_to_boxes(pil_img, lang="eng")
+    lines = text.split('\n')
+    boxes = []
+    for line in lines:
+        char = line.split(' ')
+        box = {'text':char[0], 'x1':char[1], 'y1':char[2], 'x2':char[3], 'y2':char[4]}
+        boxes.append(box)
+
+    for box in boxes:
+        print(box)
     cv2.imshow('dst_rt', cv2.resize(cv_img, (0,0), fx=0.4, fy=0.4))
     cv2.waitKey(0)
     

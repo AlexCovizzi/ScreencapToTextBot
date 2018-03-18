@@ -6,7 +6,7 @@ import pytesseract
 from PIL import Image
 
 def find(pil_img):
-    cv_img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
+    cv_img = cv2.cvtColor(np.array(pil_img, dtype=np.uint8), cv2.COLOR_RGB2GRAY)
 
     wsize = cv_img.shape[1]
 
@@ -17,51 +17,36 @@ def find(pil_img):
         #print(rect)
         cv2.rectangle(cv_img, (rect["left"], rect["top"]), (rect["left"]+rect["w"], rect["top"]+rect["h"]), (0, 0, 255), 3)
         
-    #cv2.imshow('dst_rt', cv2.resize(cv_img, (0,0), fx=0.4, fy=0.4))
-    #cv2.waitKey(0)
+    cv2.imshow('dst_rt', cv2.resize(cv_img, (0,0), fx=0.5, fy=0.5))
+    cv2.waitKey(0)
 
     return rects
-
 
 def findContours(cv_img):
     contours = []
 
-    cv_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY)
-    cv_img = cv2.medianBlur(cv_img, 5)
-    #cv_img = cv2.GaussianBlur(cv_img, (5, 5), 0)
-
-    ret, upper_thresh = cv2.threshold(cv_img,242,255,cv2.THRESH_BINARY_INV)
-    ret, lower_thresh = cv2.threshold(cv_img,120,255,cv2.THRESH_BINARY)
+    ret, upper_thresh = cv2.threshold(cv_img,244,255,cv2.THRESH_BINARY_INV)
+    ret, lower_thresh = cv2.threshold(cv_img,140,255,cv2.THRESH_BINARY)
     cv_img = cv2.bitwise_and(lower_thresh, upper_thresh)
 
-    kernel = np.ones((5,5),np.uint8)
+    cv_img = cv2.medianBlur(cv_img, 11)
+
+    kernel = np.ones((7,7),np.uint8)
     cv_img = cv2.erode(cv_img, kernel)
 
-    _,contours,_ = cv2.findContours(cv_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    _,cnts,_ = cv2.findContours(cv_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    for cnt in cnts:
+        if is_contour_mostly_rectangular(cnt):
+            contours.append(cnt)
 
     cv2.imshow('dst_rt', cv2.resize(cv_img, (0,0), fx=0.4, fy=0.4))
     cv2.waitKey(0)
-    '''
-    #blue_mask = cv2.inRange(cv_img, (190, 160, 0), (255, 212, 110))
-    blue_mask = cv2.inRange(cv_img, (10, 120, 200), (80, 200, 250))
-    blue = cv2.bitwise_and(cv_img, cv_img, mask = blue_mask)
-    blue = cv2.cvtColor(blue, cv2.COLOR_BGR2GRAY)
-    blue = cv2.erode(blue,None,iterations = 2)
-    ret, blue = cv2.threshold(blue, 127, 255, cv2.THRESH_TRUNC)
-    _,blue_contours,_ = cv2.findContours(blue, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    gray_mask = cv2.inRange(cv_img, (220, 220, 220), (245, 245, 245))
-    gray = cv2.bitwise_and(cv_img, cv_img, mask = gray_mask)
-    gray = cv2.cvtColor(gray, cv2.COLOR_BGR2GRAY)
-    gray = cv2.erode(gray,None,iterations = 2)
-    ret, gray = cv2.threshold(gray, 200, 255, cv2.THRESH_TRUNC)
-    _,gray_contours,_ = cv2.findContours(gray, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    contours.extend(blue_contours)
-    contours.extend(gray_contours)
-    '''
 
     return contours
+
+def is_contour_mostly_rectangular(contour):
+    return True
 
 def getBoundingRects(contours, min_w, min_h, max_w):
     rects = []

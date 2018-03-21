@@ -40,7 +40,34 @@ def get_mode_lightness(hls_img):
     return mode(px_row)
 
 if __name__ == '__main__':
-    url = "https://i.redd.it/sqznulw1xem01.jpg"
+    url = "https://i.redd.it/5dvar4yyk2n01.png"
     pil_img = downloadimage.get(url)
-    text = analyze(pil_img)
-    print(text)
+    cv_img = cv2.cvtColor(np.array(pil_img, dtype=np.uint8), cv2.COLOR_RGB2HLS)
+    h,l,s = cv2.split(cv_img)
+
+    '''
+    per prima cosa prendo il canale saturazione,
+    ed estraggo le forme semi-rettangolari con
+    roba scritta dentro (la roba scritta dentro è in genere bianca)
+    poi prendo il canale lightness ed estraggo le forme con dentro
+    delle scritte nere
+    '''
+    
+    #_,cv_img = cv2.threshold(cv_img,250,120,cv2.THRESH_BINARY_INV)
+    #kernel = np.ones((11,11),np.uint8)
+    #cv_img = cv2.erode(cv_img, kernel)
+    #cv_img = cv2.medianBlur(cv_img, 5)
+
+    #_,cv_img = cv2.threshold(s,127,255,cv2.THRESH_BINARY)
+    #cv_img = cv2.medianBlur(cv_img, 5)
+
+    #_,cv_img = cv2.threshold(v,127,255,cv2.THRESH_BINARY_INV)
+    #cv_img = cv2.medianBlur(cv_img, 7)
+    #kernel = np.ones((5,5),np.uint8)
+    #cv_img = cv2.erode(cv_img, kernel)
+    #cv_img = cv2.medianBlur(cv_img, 5)
+
+    cv2.imshow('dst_rt', cv2.resize(l, (0,0), fx=0.3, fy=0.3))
+    cv2.waitKey(0)
+    cv2.imshow('dst_rt', cv2.resize(s, (0,0), fx=0.3, fy=0.3))
+    cv2.waitKey(0)

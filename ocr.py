@@ -40,15 +40,47 @@ def get_mode_lightness(hls_img):
     return mode(px_row)
 
 if __name__ == '__main__':
-    url = "https://i.redd.it/5dvar4yyk2n01.png"
+    url = "https://i.imgur.com/7nwQs7o.jpg"
     pil_img = downloadimage.get(url)
-    cv_img = cv2.cvtColor(np.array(pil_img, dtype=np.uint8), cv2.COLOR_RGB2HLS)
-    h,l,s = cv2.split(cv_img)
+
+    cv_img = cv2.cvtColor(np.array(pil_img, dtype=np.uint8), cv2.COLOR_RGB2BGR)
+
+    pil_img = Image.fromarray(cv2.cvtColor(cv_img, cv2.COLOR_BGR2GRAY))
+    string_boxes = pytesseract.image_to_boxes(pil_img, lang="eng")
+    rows = string_boxes.split("\n")
+    chars = []
+    hsize = cv_img.shape[0]
+    for row in rows:
+        tokens = row.split(" ")
+        char = {'text':tokens[0], 'x1':int(tokens[1]), 'y1':hsize-int(tokens[2]), 'x2':int(tokens[3]), 'y2':hsize-int(tokens[4])}
+        chars.append(char)
+
+    words = [chars[0]]
+    for char in chars[1:]:
+        last = words[-1]
+        if last['x2']-4 < char['x1'] < last['x2']+12 and ( last['y1']-12 < char['y1'] < last['y1']+12 or last['y2']-12 < char['y2'] < last['y2']+12 ):
+            last['text'] += char['text']
+            last['x2'] = char['x2']
+            if char['y1'] < last['y1']: last['y1'] = char['y1']
+            if char['y2'] > last['y2']: last['y2'] = char['y2']
+        else:
+            words.append(char)
+
+    lines = [words[0]]
+    for word in words[1:]:
+        last = lines[-1]
+        if last['x2']-4 < word['x1'] < last['x2']+40 and ( last['y1']-12 < word['y1'] < last['y1']+12 or last['y2']-12 < word['y2'] < last['y2']+12 ):
+            last['text'] += " "+word['text']
+            last['x2'] = word['x2']
+        else:
+            lines.append(word)
+
+    for line in lines:
+        print(line)
 
     '''
     per prima cosa prendo il canale saturazione,
-    ed estraggo le forme semi-rettangolari con
-    roba scritta dentro (la roba scritta dentro è in genere bianca)
+    ed estraggo le forme semi-rettangolari
     poi prendo il canale lightness ed estraggo le forme con dentro
     delle scritte nere
     '''
@@ -66,8 +98,3 @@ if __name__ == '__main__':
     #kernel = np.ones((5,5),np.uint8)
     #cv_img = cv2.erode(cv_img, kernel)
     #cv_img = cv2.medianBlur(cv_img, 5)
-
-    cv2.imshow('dst_rt', cv2.resize(l, (0,0), fx=0.3, fy=0.3))
-    cv2.waitKey(0)
-    cv2.imshow('dst_rt', cv2.resize(s, (0,0), fx=0.3, fy=0.3))
-    cv2.waitKey(0)

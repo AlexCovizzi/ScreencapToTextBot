@@ -14,10 +14,10 @@ def analyze(pil_img, bounds = None):
     if bounds: pil_img = pil_img.crop(bounds)
         
     prep_img = preprocess(pil_img)
-    lines = tesseract_ocr(prep_img)
+    string = pytesseract.image_to_string(pil_img, lang="eng")
     prep_img.close()
 
-    return lines
+    return string
 
 def preprocess(pil_img):
     cv_img = np.array(pil_img, dtype=np.uint8)

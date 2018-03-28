@@ -86,28 +86,27 @@ def message_boxes(pil_img):
     cv_img = img.copy()
     # preprocess
     cv_img = cv2.cvtColor(cv_img, cv2.COLOR_RGB2GRAY)
-    cv_img = cv2.medianBlur(cv_img, 7)
+    cv_img = cv2.GaussianBlur(cv_img, (7, 7), 0)
     cv_img = contrast(cv_img, 7, -210)
     cv_img = cv2.Canny(cv_img, 40, 60, apertureSize=5)
     
     _,contours,_ = cv2.findContours(cv_img, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
     for cnt in contours:
-        #cnt = cv2.convexHull(cnt)
-        #cnt = cv2.approxPolyDP(cnt, 1, True)
-        #cv2.drawContours(img, [cnt], 0, (0,255,0),2)
-        if is_contour_message_box(cnt):
-            cnt = cv2.boxPoints(cv2.minAreaRect(cnt))
-            x, y, w, h = cv2.boundingRect(cnt)
-            if w > 40 and h > 40:
-                box = {"x1":x, "y1":y, "x2":x+w, "y2":y+h}
-                boxes.append(box)
-                #cv2.rectangle(img, (box["x1"], box["y1"]), (box["x2"], box["y2"]), (0, 0, 255), 3)
+        cv2.drawContours(img, [cnt], 0, (0,255,0),2)
+        cnt = cv2.convexHull(cnt)
+        #cnt = cv2.approxPolyDP(cnt, 5, True)
+        cv2.drawContours(img, [cnt], 0, (0,255,0),2)
+        x, y, w, h = cv2.boundingRect(cnt)
+        box = {"x1":x, "y1":y, "x2":x+w, "y2":y+h}
+        boxes.append(box)
+        if is_contour_message_box(cnt) and w > 40 and h > 40:
+            cv2.rectangle(img, (box["x1"], box["y1"]), (box["x2"], box["y2"]), (0, 0, 255), 3)
     
     boxes.sort(key=lambda y: y["y1"])
 
-    #cv2.imshow('img', cv2.resize(img, (0,0), fx=0.5, fy=0.5))
-    #cv2.waitKey(0)
+    cv2.imshow('img', cv2.resize(img, (0,0), fx=0.5, fy=0.5))
+    cv2.waitKey(0)
     
     return boxes
 
@@ -126,7 +125,11 @@ def is_contour_message_box(cnt):
         last_x = x
         last_y = y
     #print("Vertical: {}, Horizontal: {}".format(vertical, horizontal))
-    if vertical > 6 and horizontal > 24:
+    
+    x, y, w, h = cv2.boundingRect(cnt)
+    rect = np.array([[x, y], [x+w, y], [x+w, y+h], [x, y+h]])
+    ret = cv2.matchShapes(cnt, rect, 1, 0.0)
+    if ret < 0.2 and vertical > 8 and horizontal > 24:
         return True
     else:
         return False
@@ -143,7 +146,7 @@ def contrast(cv_img, alpha=1.5, beta=-60.0):
 if __name__ == "__main__":
     import downloadimage
 
-    urls = ["https://i.redd.it/a375ghwf7rn01.jpg"]
+    urls = ["https://i.redd.it/cp5rwyl8fco01.jpg"]
     for url in urls:
         pil_img = downloadimage.get(url)
 
@@ -155,7 +158,7 @@ if __name__ == "__main__":
             cv2.rectangle(cv_img, (box["x1"], box["y1"]), (box["x2"], box["y2"]), (0, 0, 255), 3)
             message = tess_ocr.analyze(pil_img, (box['x1'], box['y1'], box['x2'], box['y2']))
             messages.append(message)
-            print(message)
+            #print(message)
 
         cv2.imshow('img', cv2.resize(cv_img, (0,0), fx=0.5, fy=0.5))
         cv2.waitKey(0)

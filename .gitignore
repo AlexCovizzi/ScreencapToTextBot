@@ -3,10 +3,6 @@
 *.jpeg
 *.png
 
-#pipenv
-Pipfile
-Pipfile.lock
-
 .vscode/
 
 # configuration file

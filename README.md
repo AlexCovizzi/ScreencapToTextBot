@@ -8,7 +8,3 @@ The OCR part is done with [Azure Cognitive Services](https://azure.microsoft.com
 The image manipulation is done with [OpenCV](https://opencv.org/). Using OpenCV the bot can find the message boxes based on their color (gray, blue).
 
 Finally those two results are put together: if the text is inside the box, it means it's a message otherwise it means it's useless data (date, time, cell info etc). The message is then assigned to **OP** if it's on the right or to **Other** if it's on the left.
-
-**Note**: This bot is tailored for the subreddit r/Tinder, it can only recognize message boxes gray or blue (a conversation in Tinder), if none is found, the submission is discarded.
-
-**Note 2**: The bot is banned from r/Tinder
